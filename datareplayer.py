@@ -13,6 +13,7 @@ class DataReplayer:
         self.is_client_mode = is_client_mode
         self.delete_newline = delete_newline
         self.conn = None
+        self.msgs_send = 0
         if(self.is_client_mode):
             self.establish_client_connection()
         else:
@@ -63,6 +64,7 @@ class DataReplayer:
             self.s.sendall(send_buffer)
         else:
             self.conn.sendall(send_buffer)
+        self.msgs_send += 1
     
     def replay(self, timeout):
         i = 0
@@ -111,5 +113,6 @@ if __name__ == '__main__':
     while True:
         replayer.run(filename)
         replayer.replay(timeout)
-        time.sleep(0.1)
+        time.sleep(timeout)
         logging.info('resending...')
+        logging.info(f'msgs send: {replayer.msgs_send}')
